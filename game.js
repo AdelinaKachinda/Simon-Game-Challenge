@@ -1,5 +1,7 @@
 // arrays to store all available colors, the pattern in which the game goes and the users choices 
+var level = 0;
 var gamePattern = [];
+var started_to_toggle = true
 var userClickedPattern = [];
 var buttonColours = ["red", "blue", "green", "yellow"];
 
@@ -9,6 +11,9 @@ $(".btn").click(function (){
     
     var userChosenColour = $(this).attr("id");
     userClickedPattern.push(userChosenColour);
+    var last_index = userClickedPattern['length'] - 1
+    //
+    checkAnswer(last_index)
 
     // calls playsound using the user's colour whatever the user picks
     playsound(userChosenColour);
@@ -18,10 +23,25 @@ $(".btn").click(function (){
     
 });
 
+// calling next sequence when a key press has been detected in order to tell the user to start level 1
+$(document).keyup(function () {
 
-function nextSequence(){
+    if (started_to_toggle){     
+        $("h1").text("Level " + level)    
+        nextSequence()
+        started_to_toggle = false
+    };
+
+})
+
+
+function nextSequence(){ 
+
+    //Increments the level of the game and displays it to the user
+    level += 1 
+    $("h1").text("Level " + level) 
+
     // Gives us a random number that generates a random colour from buttonColour 
-
     var randomNumber = Math.floor(Math.random() * 4);
     var randomChosenColour = buttonColours[randomNumber];
     
@@ -33,6 +53,8 @@ function nextSequence(){
 
     //calls playsound but using the random colourr the computer chose to show the user what button moved initially 
     playsound(randomChosenColour);
+
+  
 }
 
 function playsound(name){
@@ -44,6 +66,20 @@ function playsound(name){
 }
 
 
+// checking if the user is correct
+function checkAnswer(currentLevel){
+    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]){
+      if (userClickedPattern.length === gamePattern.length){
+        setTimeout(function(){
+            nextSequence()
+            userClickedPattern = []
+        }, 1000);
+      }
+    }
+
+
+}
+
 
 function animatePress(currentColour){
     // adds css class to color ids in order for a backgrouncolor 
@@ -54,5 +90,4 @@ function animatePress(currentColour){
     }, 100);
 
 }
-
 
