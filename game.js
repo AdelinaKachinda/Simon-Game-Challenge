@@ -1,7 +1,6 @@
 // arrays to store all available colors, the pattern in which the game goes and the users choices 
 var level = 0;
 var gamePattern = [];
-var started_to_toggle = true
 var userClickedPattern = [];
 var buttonColours = ["red", "blue", "green", "yellow"];
 
@@ -24,15 +23,21 @@ $(".btn").click(function (){
 });
 
 // calling next sequence when a key press has been detected in order to tell the user to start level 1
-$(document).keyup(function () {
+function newGame(){
 
-    if (started_to_toggle){     
-        $("h1").text("Level " + level)    
-        nextSequence()
-        started_to_toggle = false
+    var started_to_toggle = true
+    $(document).keyup(function () {
+
+        if (started_to_toggle){     
+            $("h1").text("Level " + level)    
+            nextSequence()
+            started_to_toggle = false
     };
-
 })
+
+}
+
+newGame()
 
 
 function nextSequence(){ 
@@ -73,12 +78,29 @@ function checkAnswer(currentLevel){
         setTimeout(function(){
             nextSequence()
             userClickedPattern = []
-        }, 1000);
+        }, 900);
       }
+    }else{
+        var wrong = new Audio("sounds/wrong.mp3")
+        wrong.play()
+
+        $("body").addClass("game-over")
+        setTimeout(function(){
+            $("h1").text("Game Over, press any key to restart")
+            $("body").removeClass("game-over")
+        }, 70);
+
+       
+        newGame()
+        level = 0
+        gamePattern = []
+        userClickedPattern = []
+        
+        
     }
 
-
 }
+
 
 
 function animatePress(currentColour){
